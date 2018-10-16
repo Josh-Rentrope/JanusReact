@@ -1,24 +1,27 @@
-import React from 'react';
-import { Admin, Resource } from 'react-admin';
-import jsonServerProvider from 'ra-data-json-server';
+import React, { Component } from 'react';
+import { HashRouter, Route, Switch } from 'react-router-dom';
+import './App.scss';
 
-import { PostList, PostEdit, PostCreate } from './posts';
-import { UserList } from './users';
+// Containers
+import { DefaultLayout } from './containers';
+// Pages
+import { Login, Page404, Page500, Register } from './views/Pages';
+// import { renderRoutes } from 'react-router-config';
 
-import Dashboard from './Dashboard';
-import authProvider from './authProvider';
-
-
-import PostIcon from '@material-ui/icons/Book';
-import UserIcon from '@material-ui/icons/Group';
-
-
-const dataProvider = jsonServerProvider('http://jsonplaceholder.typicode.com');
-const App = () => (
-    <Admin dashboard={Dashboard} authProvider={authProvider} dataProvider={dataProvider}>
-        <Resource name="posts" list={PostList} edit={PostEdit} create={PostCreate} icon={PostIcon} />
-        <Resource name="users" list={UserList} icon={UserIcon} />
-    </Admin>
-);
+class App extends Component {
+  render() {
+    return (
+      <HashRouter>
+        <Switch>
+          <Route exact path="/login" name="Login Page" component={Login} />
+          <Route exact path="/register" name="Register Page" component={Register} />
+          <Route exact path="/404" name="Page 404" component={Page404} />
+          <Route exact path="/500" name="Page 500" component={Page500} />
+          <Route path="/" name="Home" component={DefaultLayout} />
+        </Switch>
+      </HashRouter>
+    );
+  }
+}
 
 export default App;

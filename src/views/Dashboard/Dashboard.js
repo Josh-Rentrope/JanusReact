@@ -20,7 +20,7 @@ import {
   Row,
   Table,
 } from 'reactstrap';
-import Widget03 from '../../views/Widgets/Widget03'
+import Widget03 from '../../views/Widgets/Widget03';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities'
 
@@ -480,6 +480,11 @@ class Dashboard extends Component {
 
     return (
       <div className="animated fadeIn">
+		<Row>
+			<Col xs="12" sm="6" lg="3">
+
+			</Col>
+		</Row>
         <Row>
           <Col xs="12" sm="6" lg="3">
             <Card className="text-white bg-info">

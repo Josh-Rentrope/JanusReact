@@ -27,9 +27,9 @@ if(electron.remote.MeshObject == null){
 	anyMesh.disconnectedFrom = function(name) {
 		console.log('Disconnected from ' + name);
 	}
-	anyMesh.stop();
-	anyMesh.connect("JanusReact", ["JanusNodes", "JanusUpdate"]);
+	//anyMesh.stop();
 	anyMesh.publish("updates", {"update":"new headlines!", "content":[1, 5, 8]});
+	//anyMesh.connect("JanusReact", ["JanusServers","JanusNodes", "JanusUpdate"]);
 	electron.remote.MeshObject = anyMesh;
 }
 

@@ -29,22 +29,26 @@
     "flag-icon-css": "^3.2.0",
     "font-awesome": "^4.7.0",
     "leaflet": "^1.3.4",
+    "mdns": "^2.4.0",
     "node-sass": "^4.9.3",
     "prop-types": "^15.6.2",
     "react": "^16.5.2",
     "react-app-polyfill": "^0.1.3",
     "react-chartjs-2": "^2.7.2",
     "react-dom": "^16.5.2",
+    "react-leaflet": "^2.1.0",
     "react-loadable": "^5.5.0",
     "react-map-gl": "^3.3.6",
     "react-router-config": "^4.4.0-beta.1",
     "react-router-dom": "^4.3.1",
     "react-test-renderer": "^16.5.2",
     "reactstrap": "^6.5.0",
-    "simple-line-icons": "^2.4.1"
+    "simple-line-icons": "^2.4.1",
+    "zeroconf": "^0.1.4"
   },
   "devDependencies": {
     "electron": "^3.0.4",
+    "electron-rebuild": "^1.8.2",
     "foreman": "^3.0.1",
     "react-scripts": "^2.0.4"
   },

@@ -6,13 +6,15 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+//import ZeroConf from 'zeroconf'; 
 //import Anymesh from 'anymesh';
 
 const electron = window.require('electron');
 const fs = electron.remote.require('fs');
 const AnyMesh = electron.remote.require('../node_modules/anymesh/lib/AnyMesh');
+const MDNS = electron.remote.require('mdns');
 //console.log(anyMesh);
-console.log(electron);
+//console.log(electron);
 if(electron.remote.MeshObject == null){
 	let anyMesh = new AnyMesh();
 	anyMesh.received = function(message) { 
@@ -31,6 +33,21 @@ if(electron.remote.MeshObject == null){
 	anyMesh.publish("updates", {"update":"new headlines!", "content":[1, 5, 8]});
 	//anyMesh.connect("JanusReact", ["JanusServers","JanusNodes", "JanusUpdate"]);
 	electron.remote.MeshObject = anyMesh;
+	
+	//let mdns = new MDNS();
+	electron.remote.ad = MDNS.createAdvertisement(MDNS.tcp('http'), 4321, );
+	electron.remote.ad.start();
+	electron.remote.browser = MDNS.createBrowser(MDNS.tcp('http'));
+	electron.remote.browser.on('serviceUp', function(service) {
+	  console.log("service up: ", service);
+	});
+	electron.remote.browser.on('serviceDown', function(service) {
+	  console.log("service down: ", service);
+	});
+	//electron.remote.browser.start();
+	//console.log(zeroconf);
+	//zeroconf.publish({ type: 'http', protocol: 'tcp', port: 5000, name: 'Janus React Node', txt: {} });
+	
 }
 
 

@@ -1,0 +1,6 @@
+{
+  "name": "Manager",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./Manager.js"
+}

@@ -13,6 +13,7 @@ const electron = window.require('electron');
 const fs = electron.remote.require('fs');
 const AnyMesh = electron.remote.require('../node_modules/anymesh/lib/AnyMesh');
 const Bonjour = electron.remote.require('bonjour');
+const ReconnectingWebSocket = electron.remote.require('reconnecting-websocket');
 //console.log(anyMesh);
 //console.log(electron);
 if(electron.remote.MeshObject == null){
@@ -37,12 +38,22 @@ if(electron.remote.MeshObject == null){
 	if(electron.remote.peers == undefined){
 		electron.remote.peers = [];
 	}
-	electron.remote.bonjour = Bonjour();
+	if(electron.remote.bonjour == null){
+		
+		electron.remote.bonjour = Bonjour();
+	}
+	electron.remote.bonjour.unpublishAll();
 	electron.remote.bonjour.publish({ name: 'Janus React Node', type: 'http', port: 7990 });
-	electron.remote.bonjour.find({ type: 'http' }, function (service) {
-	  console.log('Found an HTTP server:', service)
-      electron.remote.peers.push(service);
-	})
+	electron.remote.browser = electron.remote.bonjour.find({ type: 'http' }, function (service) {
+	  //console.log('Found an HTTP server:', service)
+		/*
+		Service subtypes:
+		
+		*/
+	  
+	  electron.remote.peers.push(service);
+	});
+	setInterval(() => { electron.remote.browser.update() }, 30000);
 	
 	console.log(electron);
 	//zeroconf.publish({ type: 'http', protocol: 'tcp', port: 5000, name: 'Janus React Node', txt: {} });

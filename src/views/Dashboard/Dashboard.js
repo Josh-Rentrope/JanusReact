@@ -23,9 +23,10 @@ import {
 import Widget03 from '../../views/Widgets/Widget03';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
-
+import { hashHistory } from "react-router";
 import 'leaflet/dist/leaflet.css';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 
 const electron = window.require('electron');
 
@@ -469,10 +470,10 @@ class NodeIndex extends React.Component {
     };
   }
   componentDidMount() {
-    this.intervalID = setInterval(
+    /*this.intervalID = setInterval(
       () => this.tick(),
       1000
-    );
+    );*/
   }
   componentWillUnmount() {
     clearInterval(this.intervalID);
@@ -499,6 +500,7 @@ class NodeIndex extends React.Component {
 		 
   }
   render() {
+	  
     return (
 	  <tr>
 		  <td className="text-center">
@@ -521,14 +523,10 @@ class NodeIndex extends React.Component {
 			  <strong>{this.state.peer.addresses[0]}</strong>
 			</td>
 			<td>
-			  <Dropdown id='card2' isOpen={this.state.dropdownOpen} toggle={() => { this.setState({ dropdownOpen: !this.state.dropdownOpen }); }}>
-				<DropdownToggle caret className="p-0" color="black">
-				  <i className="icon-settings"></i>
-				</DropdownToggle>
-				<DropdownMenu right>
-				  <DropdownItem>Congifure Device</DropdownItem>
-				</DropdownMenu>
-			  </Dropdown>
+			  <Link to={{ pathname: '/Manager' }}><Button type="button" className="btn btn-outline-primary"
+				title="Go to Details"
+				  
+				>Inspect</Button></Link>
 			</td>
 		</tr>
     );
@@ -557,9 +555,10 @@ class NodeTable extends React.Component {
     let table = [];
 
     // Outer loop to create parent
-    for (let i = 0; i < this.state.electron.remote.peers.length; i++) {
+	
+    for (let i = 0; i < this.state.electron.remote.browser.services.length; i++) {
       //Inner loop to create children
-      table.push(<NodeIndex key={this.state.electron.remote.peers[i].name} peer={this.state.electron.remote.peers[i]}></NodeIndex>);
+      table.push(<NodeIndex key={this.state.electron.remote.browser.services[i].name} peer={this.state.electron.remote.browser.services[i]}></NodeIndex>);
       //Create the parent and add the children
     }
     return table;
@@ -775,8 +774,8 @@ class Dashboard extends Component {
 								</DropdownMenu>
 							  </Dropdown>
 							</ButtonGroup>
-							<div className="text-value">{this.state.electron.remote.peers.length}</div>
-							<div>Network Node Count</div>
+							<div className="text-value">{this.state.electron.remote.browser.services.length}</div>
+							<div>Last Node Count</div>
 						  </CardBody>
 						  <div className="chart-wrapper" style={{ height: '70px' }}>
 							<Line data={cardChartData2} options={cardChartOpts3} height={70} />

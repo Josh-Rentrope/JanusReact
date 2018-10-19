@@ -74,7 +74,7 @@ class Manager extends Component {
 	//console.log(this.state.electron);
     return (
       <div className="animated fadeIn">
-		
+		OK
       </div>
     );
   }

@@ -496,6 +496,9 @@ class NodeIndex extends React.Component {
 	  if (this.state.peer.name.includes("Android")){
 		  return "Android";
 	  }
+	  if (this.state.peer.name.includes("Raspberry")){
+		  return "Raspberry";
+	  }
 	  return "Custon";
 		 
   }
@@ -523,7 +526,8 @@ class NodeIndex extends React.Component {
 			  <strong>{this.state.peer.addresses[0]}</strong>
 			</td>
 			<td>
-			  <Link to={{ pathname: '/Manager' }}><Button type="button" className="btn btn-outline-primary"
+			  <Link to={{ pathname: '/Manager/'+this.getNodeType(),
+    					  state: this.state.peer }}><Button type="button" className="btn btn-outline-primary"
 				title="Go to Details"
 				  
 				>Inspect</Button></Link>

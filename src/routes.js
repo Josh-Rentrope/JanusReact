@@ -192,6 +192,11 @@ const AndroidManager = Loadable({
   loading: Loading,
 });
 
+const RaspberryManager = Loadable({
+  loader: () => import('./views/Manager/RaspberryManager'),
+  loading: Loading,
+});
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -199,6 +204,7 @@ const routes = [
   { path: '/', exact: true, name: 'Home', component: DefaultLayout },
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/manager/android', name: 'Android Manager', component: AndroidManager },
+  { path: '/manager/raspberry', name: 'Raspberry Pi Manager', component: RaspberryManager },
   { path: '/manager' , name: 'Manager', component: Manager },
 	/*
   { path: '/theme', exact: true, name: 'Theme', component: Colors },

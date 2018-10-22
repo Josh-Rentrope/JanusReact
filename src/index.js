@@ -54,7 +54,7 @@ if(electron.remote.MeshObject == null){
 	  electron.remote.peers.push(service);
 	});
 	setInterval(() => { electron.remote.browser.update() }, 30000);
-	
+	electron.remote.peermap = {};
 	console.log(electron);
 	//zeroconf.publish({ type: 'http', protocol: 'tcp', port: 5000, name: 'Janus React Node', txt: {} });
 	

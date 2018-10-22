@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import { Bar, Line } from 'react-chartjs-2';
+import ReactTable from 'react-table';
+
+import 'react-table/react-table.css'
 import {
   Badge,
   Button,
@@ -233,6 +236,44 @@ class NodeInfo extends React.Component {
   }
 }
 
+class ArchiveTable extends Component {
+	constructor(props){
+		super(props);
+		this.state = {
+			data : props.archives
+		};
+		console.log(this.state);
+	}
+	componentDidMount(){
+		setTimeout(()=>{
+			this.setState({time:new Date()});
+			console.log(this.state);
+		},10000);
+	}
+	render() {
+		const columns = [{
+			Header: 'Name',
+			accessor: 'name' // String-based value accessors!
+		  }, {
+			Header: 'View',
+			accessor: 'name',
+			Cell: props => <span className='number'>View {props.value}</span> // Custom cell components!
+		  }, {
+			id: 'friendName', // Required because our accessor is not a string
+			Header: 'Friend Name',
+			accessor: d => d.friend.name // Custom value accessors!
+		  }, {
+			Header: props => <span>Friend Age</span>, // Custom header components!
+			accessor: 'friend.age'
+		  }];
+		return ( <ReactTable
+			data={this.state.data}
+			columns={columns}
+  		/> );
+	}
+
+}
+
 class AndroidManager extends Component {
 	
   constructor(props) {
@@ -248,7 +289,7 @@ class AndroidManager extends Component {
     //console.log(this.props);
 	if(this.props.location.state){
 		//peer object passed
-		
+		 
     	this.setState(
 			this.props.location.state
 		);
@@ -258,16 +299,24 @@ class AndroidManager extends Component {
 				Data:axios.get('http://'+this.props.location.state.addresses+':7995/?action=GetData',)
 			});
 		}
+		
 		//console.log(this.state);
+	}else{
+
+		this.setState({
+			Data:axios.get('http://192.168.47.101:7995/?action=GetData')
+		});
 	}
-	
+	  
+	 
   }
 
   render() {
 	//console.log(this.state.electron);
     return (
-      <div className="animated fadeIn">
+      <div className="animated fadeIn"> 
 		<NodeInfo peer={this.state}></NodeInfo>
+		<ArchiveTable archives={this.state.Data}></ArchiveTable>
 		
       </div>
     );

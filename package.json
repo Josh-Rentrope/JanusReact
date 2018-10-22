@@ -44,6 +44,7 @@
     "react-rotary-knob": "^1.1.1",
     "react-router-config": "^4.4.0-beta.1",
     "react-router-dom": "^4.3.1",
+    "react-table": "^6.8.6",
     "react-test-renderer": "^16.5.2",
     "reactstrap": "^6.5.0",
     "reconnecting-websocket": "^4.1.9",

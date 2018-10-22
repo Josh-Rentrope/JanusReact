@@ -24,9 +24,19 @@ import Widget03 from '../../views/Widgets/Widget03';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { hashHistory } from "react-router";
+import { Link } from 'react-router-dom';
+
+
 import 'leaflet/dist/leaflet.css';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
-import { Link } from 'react-router-dom';
+import L from 'leaflet';
+delete L.Icon.Default.prototype._getIconUrl;
+L.Icon.Default.mergeOptions({
+    iconRetinaUrl: require('leaflet/dist/images/marker-icon-2x.png'),
+    iconUrl: require('leaflet/dist/images/marker-icon.png'),
+    shadowUrl: require('leaflet/dist/images/marker-shadow.png')
+});
+
 
 const electron = window.require('electron');
 
@@ -460,6 +470,67 @@ const mainChartOpts = {
 
 const position = [28.0395, -82];
 
+class NodeMap extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      peer: props.peer,
+	  time : null
+    };
+  }
+  
+	
+  componentDidMount() {
+    this.intervalID = setInterval(
+      () => this.tick(),
+      5000
+    );
+  }
+	
+  componentWillUnmount() {
+    clearInterval(this.intervalID);
+  }
+  createMarkers = () => {
+    let table = [];
+
+    // Outer loop to create parent
+	
+    for (let i = 0; i < electron.remote.browser.services.length; i++) {
+	  if(electron.remote.browser.services[i].addresses[0]){  
+	  	//if(electron.remote.peermap[electron.remote.browser.services[i].addresses[0]] == un){
+		table.push(<Marker key={i} position={[(position[0] +i), (position[1]+i)]}>
+		  <Popup>{electron.remote.browser.services[i].name}</Popup>
+		</Marker>);
+		//  console.log("Hello");
+		// electron.remote.peermap[electron.remote.browser.services[i].addresses[0]] = "New";
+		//}
+	  }
+      //Inner loop to create children
+		
+      //table.push(<NodeIndex key={this.state.electron.remote.browser.services[i].name} peer={this.state.electron.remote.browser.services[i]}></NodeIndex>);
+      //Create the parent and add the children
+    }
+    return table;
+  }
+  tick() {
+    this.setState({
+      time: new Date().toLocaleString()
+    });
+  }
+  render() {
+    return (
+		<Map center={position} zoom={13} style={{height: '40vh', width:'100%'}}>
+		<TileLayer
+		  url="http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
+		  attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+		/>
+		{this.createMarkers()}
+		
+	  </Map>
+    );
+  }
+}
+
 
 class NodeIndex extends React.Component {
   constructor(props) {
@@ -614,15 +685,8 @@ class Dashboard extends Component {
       <div className="animated fadeIn">
 		<Row>
 			<Col xs="12" className="pb-3">
-			  <Map center={position} zoom={13} style={{height: '40vh', width:'100%'}}>
-				<TileLayer
-				  url="http://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}.png"
-				  attribution="&copy; <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
-				/>
-				<Marker position={position}>
-				  <Popup>A pretty CSS3 popup.<br />Easily customizable.</Popup>
-				</Marker>
-			  </Map>
+			  <NodeMap>
+			  </NodeMap>
 			</Col>
 		</Row>
         

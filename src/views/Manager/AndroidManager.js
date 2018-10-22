@@ -132,6 +132,7 @@ const mainChartOpts = {
 class NodeInfo extends React.Component {
   constructor(props) {
     super(props);
+	this.props = props;
     this.state = {
       peer: props.peer,
 	  time : null
@@ -145,7 +146,7 @@ class NodeInfo extends React.Component {
 	  
   }
   componentWillUnmount() {
-    clearInterval(this.intervalID);
+    //clearInterval(this.intervalID);
   }
   tick() {
     this.setState({
@@ -239,16 +240,22 @@ class NodeInfo extends React.Component {
 class ArchiveTable extends Component {
 	constructor(props){
 		super(props);
+		
+		this.props = props;
 		this.state = {
 			data : props.archives
 		};
-		console.log(this.state);
+		//console.log(this.state);
 	}
 	componentDidMount(){
-		setTimeout(()=>{
+		this.intervalID = setTimeout(()=>{
 			this.setState({time:new Date()});
 			console.log(this.state);
 		},10000);
+	}
+	
+	componentWillUnmount() {
+		clearInterval(this.intervalID);
 	}
 	render() {
 		const columns = [{
@@ -258,18 +265,30 @@ class ArchiveTable extends Component {
 			Header: 'View',
 			accessor: 'name',
 			Cell: props => <span className='number'>View {props.value}</span> // Custom cell components!
-		  }, {
-			id: 'friendName', // Required because our accessor is not a string
-			Header: 'Friend Name',
-			accessor: d => d.friend.name // Custom value accessors!
-		  }, {
-			Header: props => <span>Friend Age</span>, // Custom header components!
-			accessor: 'friend.age'
 		  }];
-		return ( <ReactTable
-			data={this.state.data}
-			columns={columns}
-  		/> );
+		//console.log(this.props.peer.name);
+		if(electron.remote.peermap[this.props.peer.name]){
+			return ( 
+			<div>
+				<h2>Incident List</h2>
+				 <ReactTable
+					data={electron.remote.peermap[this.props.peer.name].data.Data.Archives}
+					columns={columns}
+				/> 
+			</div>
+			);
+		}else{
+			return ( 
+				
+			<div>
+				<h2>No Incidents Recorded</h2>
+				 <ReactTable
+					data={[]}
+					columns={columns}
+				/> 
+			</div>
+			);
+		}
 	}
 
 }
@@ -282,6 +301,7 @@ class AndroidManager extends Component {
     //this.toggle = this.toggle.bind(this);
     
     //this.onRadioBtnClick = this.onRadioBtnClick.bind(this);
+	this.props = props;
 	this.state = {};
   }
 	
@@ -289,35 +309,32 @@ class AndroidManager extends Component {
     //console.log(this.props);
 	if(this.props.location.state){
 		//peer object passed
-		 
+		console.log(this.props.location.state);
     	this.setState(
 			this.props.location.state
 		);
 		
-		if(this.props.location.state.addresses){
-			this.setState({
-				Data:axios.get('http://'+this.props.location.state.addresses+':7995/?action=GetData',)
-			});
-		}
-		
 		//console.log(this.state);
-	}else{
-
-		this.setState({
-			Data:axios.get('http://192.168.47.101:7995/?action=GetData')
-		});
 	}
 	  
 	 
+  }
+  GetRenderableData(){
+	  if(this.props.location.state){
+		  return(<div>
+		  <NodeInfo peer={this.props.location.state}></NodeInfo>
+			<ArchiveTable peer={this.props.location.state} archives={this.state.Data}></ArchiveTable>
+				 </div>
+		  );
+	  }
+		
   }
 
   render() {
 	//console.log(this.state.electron);
     return (
       <div className="animated fadeIn"> 
-		<NodeInfo peer={this.state}></NodeInfo>
-		<ArchiveTable archives={this.state.Data}></ArchiveTable>
-		
+		{this.GetRenderableData()}
       </div>
     );
   }

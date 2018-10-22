@@ -6,6 +6,7 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
+import axios from 'axios';
 //import ZeroConf from 'zeroconf'; 
 //import Anymesh from 'anymesh';
 
@@ -14,6 +15,7 @@ const fs = electron.remote.require('fs');
 const AnyMesh = electron.remote.require('../node_modules/anymesh/lib/AnyMesh');
 const Bonjour = electron.remote.require('bonjour');
 const ReconnectingWebSocket = electron.remote.require('reconnecting-websocket');
+
 //console.log(anyMesh);
 //console.log(electron);
 if(electron.remote.MeshObject == null){
@@ -55,6 +57,24 @@ if(electron.remote.MeshObject == null){
 	});
 	setInterval(() => { electron.remote.browser.update() }, 30000);
 	electron.remote.peermap = {};
+	electron.remote.peerListener = setInterval(() => { 
+		for (let i = 0; i < electron.remote.browser.services.length; i++) {
+		  //Inner loop to create children
+		  let Name = electron.remote.browser.services[i].name;
+		  if(!electron.remote.peermap[Name] ){
+			  electron.remote.peermap[Name] = {
+				info: electron.remote.browser.services[i]
+			  }
+			  if(Name.includes("Android") && electron.remote.browser.services[i].addresses){
+				  axios.get('http://'+electron.remote.browser.services[i].addresses[0]+':7995/?action=GetData',).then((data)=>{
+					  electron.remote.peermap[Name].data = data.data
+				  }); 
+			  }
+		  }
+		  
+		  //Create the parent and add the children
+		}
+	}, 10000);
 	console.log(electron);
 	//zeroconf.publish({ type: 'http', protocol: 'tcp', port: 5000, name: 'Janus React Node', txt: {} });
 	

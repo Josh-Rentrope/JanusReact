@@ -496,10 +496,15 @@ class NodeMap extends React.Component {
     // Outer loop to create parent
 	
     for (let i = 0; i < electron.remote.browser.services.length; i++) {
-	  if(electron.remote.browser.services[i].addresses[0]){  
+	  let Name = electron.remote.browser.services[i].name;
+	  if(electron.remote.browser.services[i].addresses[0]){  //checking for position
 	  	//if(electron.remote.peermap[electron.remote.browser.services[i].addresses[0]] == un){
-		table.push(<Marker key={i} position={[(position[0] +i), (position[1]+i)]}>
-		  <Popup>{electron.remote.browser.services[i].name}</Popup>
+		let newPosition = [(position[0] +i), (position[1]+i)];//
+		if(electron.remote.peermap[Name] && electron.remote.peermap[Name].data && electron.remote.peermap[Name].data.Data && electron.remote.peermap[Name].data.Data.GPS){ // Recursively finding GPS coordinates
+			newPosition = [electron.remote.peermap[Name].data.Data.GPS.latitude,electron.remote.peermap[Name].data.Data.GPS.longitude];
+		}
+		table.push(<Marker key={i} position={newPosition}>
+		  <Popup>{Name}</Popup>
 		</Marker>);
 		//  console.log("Hello");
 		// electron.remote.peermap[electron.remote.browser.services[i].addresses[0]] = "New";

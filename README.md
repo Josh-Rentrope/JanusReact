@@ -17,7 +17,7 @@ Now you can start the service with `npm run dev`
 
 ## Usage
 Once you have Janus-React running, you should see a map and a list of nodes on your network.
-If you don't see a Janus-Android node within a minute or the IP address is not showing, check that the app is on the same network and/or restart the app.
+If you don't see a Janus-Android node within a minute or the IP address is not showing, check that the app is on the same network and/or restart the app (you can try ctrl-r on JanusReact or just closing and opening Janus on the phone).
 The Map will assign a pseudo-random location for a node until GPS coordinates are supplied.
 You can inspect a device through the button on the table.
 

@@ -21,17 +21,20 @@ import {
   DropdownToggle,
   Progress,
   Row,
-  Table,
+  Table, 
 } from 'reactstrap';
 import Widget03 from '../../views/Widgets/Widget03';
 import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
+
+import { Link } from 'react-router-dom';
 
 import 'leaflet/dist/leaflet.css';
 import { Map, Marker, Popup, TileLayer } from 'react-leaflet';
 import axios from 'axios';
 
 const electron = window.require('electron');
+
 
 
 const brandPrimary = getStyle('--primary')
@@ -133,26 +136,67 @@ class NodeInfo extends React.Component {
   constructor(props) {
     super(props);
 	this.props = props;
+	  
+    this.changeEnabled = this.changeEnabled.bind(this);
+    this.changeCamera = this.changeCamera.bind(this);
+    this.changeMotion = this.changeMotion.bind(this);
+    this.changeSound = this.changeSound.bind(this);
     this.state = {
       peer: props.peer,
-	  time : null
+	  time : null,
+	  Enabled: false,
+	  CameraEnabled: true,
+	  MotionEnabled: true,
+	  SoundEnabled: true,
     };
   }
   componentDidMount() {
-    /*this.intervalID = setInterval(
+    this.intervalID = setInterval(
       () => this.tick(),
       1000
-    );*/
+    );
 	  
   }
+  changeEnabled(){
+	  axios.get('http://'+electron.remote.peermap[this.props.peer.name].info.addresses[0]+':7995/?action=SetProperty&property=Enabled&value='+!this.state.Enabled,).then((data)=>{
+					  //electron.remote.peermap[Name].data = data.data
+		  //console.log(data.data)
+		  this.setState({ Enabled: data.data.Status });
+	  }); 
+  }
+  changeCamera(){
+	  axios.get('http://'+electron.remote.peermap[this.props.peer.name].info.addresses[0]+':7995/?action=SetProperty&property=CameraEnabled&value='+!this.state.CameraEnabled,).then((data)=>{
+					  //electron.remote.peermap[Name].data = data.data
+		  //console.log(data.data)
+		  this.setState({ CameraEnabled: data.data.Status });
+	  }); 
+  }
+  changeMotion(){
+	  axios.get('http://'+electron.remote.peermap[this.props.peer.name].info.addresses[0]+':7995/?action=SetProperty&property=MotionEnabled&value='+!this.state.CameraEnabled,).then((data)=>{
+					  //electron.remote.peermap[Name].data = data.data
+		  //console.log(data.data)
+		  this.setState({ MotionEnabled: data.data.Status });
+	  }); 
+  }
+  changeSound(){
+	  axios.get('http://'+electron.remote.peermap[this.props.peer.name].info.addresses[0]+':7995/?action=SetProperty&property=SoundEnabled&value='+!this.state.CameraEnabled,).then((data)=>{
+					  //electron.remote.peermap[Name].data = data.data
+		  //console.log(data.data)
+		  this.setState({ SoundEnabled: data.data.Status });
+	  }); 
+  }
   componentWillUnmount() {
-    //clearInterval(this.intervalID);
+    clearInterval(this.intervalID);
   }
   tick() {
+	  //let writeable = electron.remote.peermap[this.props.peer.name] && electron.remote.peermap[this.props.peer.name].data && electron.remote.peermap[this.props.peer.name].data.Data;
     this.setState({
 		
       dropdownOpen: false,
       time: new Date().toLocaleString()
+	  /*MotionEnabled:(writeable?electron.remote.peermap[this.props.peer.name].data.Data.Configuration.Acceleration:false),
+	  CameraEnabled:(writeable?electron.remote.peermap[this.props.peer.name].data.Data.Configuration.Camera:false),
+	  SoundEnabled:(writeable?electron.remote.peermap[this.props.peer.name].data.Data.Configuration.Sound:false)*/
     });
   }
 	
@@ -169,6 +213,27 @@ class NodeInfo extends React.Component {
 	  return "Custon";
 		 
   }
+	
+  renderControls(){
+	let retDict = [];
+	if(electron.remote.peermap[this.props.peer.name] && electron.remote.peermap[this.props.peer.name].data && electron.remote.peermap[this.props.peer.name].data.Data){
+			//console.log(electron.remote.peermap[this.props.peer.name].data.Data);
+			return ( 
+			<div>
+				<Button color={this.state.Enabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeEnabled}>Device {this.state.Enabled? "Enabled":"Disabled"}</Button> <br/><br/>
+				<Button color={this.state.MotionEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeMotion}>Motion {this.state.MotionEnabled? "Enabled":"Disabled"}</Button> <br/><br/>
+				<Button color={this.state.SoundEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeSound}>Sound {this.state.SoundEnabled? "Enabled":"Disabled"}</Button> <br/><br/>
+				<Button color={this.state.CameraEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeCamera}>Camera {this.state.CameraEnabled? "Enabled":"Disabled"}</Button> 
+			</div>
+			);
+		}else{
+			return ( 
+				<h2>Controls still Loading</h2>
+			)
+		}
+	  return retDict;
+  }
+	
   render() {
 	  
     return (
@@ -177,56 +242,12 @@ class NodeInfo extends React.Component {
 			<Row>
 			  <Col>
 				<Card>
+				  <CardHeader>
+					<h3>Control Panel</h3>
+				  </CardHeader>
 				  <CardBody>
-					<Row>
-					  <Col sm="5">
-						<CardTitle className="mb-0">Traffic</CardTitle>
-						<div className="small text-muted">November 2015</div>
-					  </Col>
-					  <Col sm="7" className="d-none d-sm-inline-block">
-						<Button color="primary" className="float-right"><i className="icon-cloud-download"></i></Button>
-						<ButtonToolbar className="float-right" aria-label="Toolbar with button groups">
-						  <ButtonGroup className="mr-3" aria-label="First group">
-							<Button color="outline-secondary" onClick={() => this.onRadioBtnClick(1)} active={this.state.radioSelected === 1}>Day</Button>
-							<Button color="outline-secondary" onClick={() => this.onRadioBtnClick(2)} active={this.state.radioSelected === 2}>Month</Button>
-							<Button color="outline-secondary" onClick={() => this.onRadioBtnClick(3)} active={this.state.radioSelected === 3}>Year</Button>
-						  </ButtonGroup>
-						</ButtonToolbar>
-					  </Col>
-					</Row>
-					<div className="chart-wrapper" style={{ height: 300 + 'px', marginTop: 40 + 'px' }}>
-					  <Line data={mainChart} options={mainChartOpts} height={300} />
-					</div>
+					{this.renderControls()}
 				  </CardBody>
-				  <CardFooter>
-					<Row className="text-center">
-					  <Col sm={12} md className="mb-sm-2 mb-0">
-						<div className="text-muted">Visits</div>
-						<strong>29.703 Users (40%)</strong>
-						<Progress className="progress-xs mt-2" color="success" value="40" />
-					  </Col>
-					  <Col sm={12} md className="mb-sm-2 mb-0 d-md-down-none">
-						<div className="text-muted">Unique</div>
-						<strong>24.093 Users (20%)</strong>
-						<Progress className="progress-xs mt-2" color="info" value="20" />
-					  </Col>
-					  <Col sm={12} md className="mb-sm-2 mb-0">
-						<div className="text-muted">Pageviews</div>
-						<strong>78.706 Views (60%)</strong>
-						<Progress className="progress-xs mt-2" color="warning" value="60" />
-					  </Col>
-					  <Col sm={12} md className="mb-sm-2 mb-0">
-						<div className="text-muted">New Users</div>
-						<strong>22.123 Users (80%)</strong>
-						<Progress className="progress-xs mt-2" color="danger" value="80" />
-					  </Col>
-					  <Col sm={12} md className="mb-sm-2 mb-0 d-md-down-none">
-						<div className="text-muted">Bounce Rate</div>
-						<strong>Average Rate (40.15%)</strong>
-						<Progress className="progress-xs mt-2" color="primary" value="40" />
-					  </Col>
-					</Row>
-				  </CardFooter>
 				</Card>
 			  </Col>
 			</Row>
@@ -250,7 +271,7 @@ class ArchiveTable extends Component {
 	componentDidMount(){
 		this.intervalID = setTimeout(()=>{
 			this.setState({time:new Date()});
-			console.log(this.state);
+			//console.log(this.state);
 		},10000);
 	}
 	
@@ -258,21 +279,28 @@ class ArchiveTable extends Component {
 		clearInterval(this.intervalID);
 	}
 	render() {
+		
 		const columns = [{
 			Header: 'Name',
 			accessor: 'name' // String-based value accessors!
 		  }, {
 			Header: 'View',
 			accessor: 'name',
-			Cell: props => <span className='number'>View {props.value}</span> // Custom cell components!
+			Cell: props => (
+			  <Link to={{ pathname: '/Manager/Incident', state: {peerinfo: electron.remote.peermap[this.props.peer.name], name:props.value} }}>
+						 <Button type="button" className="btn btn-outline-primary" title="Go to Details">Inspect {props.value}</Button>
+				</Link> // Custom cell components!
+				)
 		  }];
 		//console.log(this.props.peer.name);
-		if(electron.remote.peermap[this.props.peer.name]){
+		if(electron.remote.peermap[this.props.peer.name] && electron.remote.peermap[this.props.peer.name].data && electron.remote.peermap[this.props.peer.name].data.Data){
+			
 			return ( 
 			<div>
 				<h2>Incident List</h2>
 				 <ReactTable
 					data={electron.remote.peermap[this.props.peer.name].data.Data.Archives}
+					
 					columns={columns}
 				/> 
 			</div>

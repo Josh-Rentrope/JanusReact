@@ -34,17 +34,17 @@ export default {
       class: ''             // optional class names space delimited list for title item ex: "text-center"
     },
     {
-      name: 'Base',
+      name: 'Pipeline',
       url: '/base',
       icon: 'icon-puzzle',
-      children: [
+      /*children: [
         {
           name: 'Breadcrumbs',
           url: '/base/breadcrumbs',
           icon: 'icon-puzzle',
         },
         
-      ],
+      ],*/
     },
     {
       divider: true,
@@ -57,7 +57,7 @@ export default {
       name: 'Sensors',
       url: '/pages',
       icon: 'icon-star',
-      children: [
+      /*children: [
         {
           name: 'Login',
           url: '/login',
@@ -78,7 +78,7 @@ export default {
           url: '/500',
           icon: 'icon-star',
         },
-      ],
+      ],*/
     },
     
   ],

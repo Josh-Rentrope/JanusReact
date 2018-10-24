@@ -197,6 +197,11 @@ const RaspberryManager = Loadable({
   loading: Loading,
 });
 
+const IncidentInspector = Loadable({
+  loader: () => import('./views/Manager/IncidentInspector'),
+  loading: Loading,
+});
+
 
 
 // https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config
@@ -205,7 +210,8 @@ const routes = [
   { path: '/dashboard', name: 'Dashboard', component: Dashboard },
   { path: '/manager/android', name: 'Android Manager', component: AndroidManager },
   { path: '/manager/raspberry', name: 'Raspberry Pi Manager', component: RaspberryManager },
-  { path: '/manager' , name: 'Manager', component: Manager },
+  { path: '/manager/incident', name: 'Incident Inspector', component: IncidentInspector },
+  //{ path: '/manager' , name: 'Manager', component: Manager },
 	/*
   { path: '/theme', exact: true, name: 'Theme', component: Colors },
   { path: '/theme/colors', name: 'Colors', component: Colors },

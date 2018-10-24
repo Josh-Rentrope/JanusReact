@@ -253,6 +253,26 @@ class IncidentChart extends React.Component {
 	  return retArray;
   }
 	
+  getPeerData(){
+	  let retArray = [];
+	  
+	  if(this.state.Incident.PeerData){
+		  Object.keys(this.state.Incident.PeerData).forEach((key) => {
+			let value = this.state.Incident.PeerData[key];
+			console.log(value.Data.ID);
+			retArray.push(<h3>Related Peer ID: {value.Data.ID}</h3>);
+			console.log(value.Data.Current);
+			if(!value.Data.Current){
+				retArray.push(<p>No related Incident</p>);
+			}else{				  
+				retArray.push(<p>Related Incident ID: {value.Data.Current.ID}</p>);
+			}
+		  });
+	}
+	  
+	  return retArray;
+  }
+	
   onExiting() {
     this.animating = true;
   }
@@ -400,13 +420,31 @@ class IncidentChart extends React.Component {
 					  </Col>
 					</Row>
 					<br/> 
-					<Col xs="12" xl="6">
+					<Col xs="12" >
 						<Carousel activeIndex={this.state.activeIndex} next={this.next} previous={this.previous}>
 						  <CarouselIndicators items={this.items} activeIndex={this.state.activeIndex} onClickHandler={this.goToIndex} />
 						  {slides}
 						  <CarouselControl direction="prev" directionText="Previous" onClickHandler={this.previous} />
 						  <CarouselControl direction="next" directionText="Next" onClickHandler={this.next} />
 						</Carousel>
+					  </Col>
+				  </CardBody>
+				</Card>
+
+				<Card>
+				  <CardBody>
+					<Row>
+					  <Col sm="5">
+						<CardTitle className="mb-0">Peer Data</CardTitle>
+						<div className="small text-muted">Zeroconf</div>
+					  </Col>
+					  <Col sm="7" className="d-none d-sm-inline-block"> 
+						
+					  </Col>
+					</Row>
+					<br/> 
+					<Col xs="12" xl="6">
+						{this.getPeerData()}
 					  </Col>
 				  </CardBody>
 				</Card>

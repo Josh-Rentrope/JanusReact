@@ -25,6 +25,7 @@ import { CustomTooltips } from '@coreui/coreui-plugin-chartjs-custom-tooltips';
 import { getStyle, hexToRgba } from '@coreui/coreui/dist/js/coreui-utilities';
 import { hashHistory } from "react-router";
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 
 
 import 'leaflet/dist/leaflet.css';
@@ -469,6 +470,9 @@ const mainChartOpts = {
 };
 
 const position = [28.0395, -82];
+//'../../assets/img/
+
+
 
 class NodeMap extends React.Component {
   constructor(props) {
@@ -477,7 +481,14 @@ class NodeMap extends React.Component {
       peer: props.peer,
 	  time : null
     };
-  }
+	this.normalIcon = new L.Icon({});
+	this.dangerIcon = new L.Icon({
+		iconRetinaUrl: require('../../assets/img/danger-marker-icon.png'),
+		iconUrl: require('../../assets/img/danger-marker-icon.png'),
+		shadowUrl: require('../../assets/img/danger-marker-shadow.png'),
+		className: 'leaflet-div-icon'
+	});
+  };
   
 	
   componentDidMount() {
@@ -492,7 +503,8 @@ class NodeMap extends React.Component {
   }
   createMarkers = () => {
     let table = [];
-
+	//console.log(normalIcon);
+	
     // Outer loop to create parent
 	
     for (let i = 0; i < electron.remote.browser.services.length; i++) {
@@ -500,10 +512,18 @@ class NodeMap extends React.Component {
 	  if(electron.remote.browser.services[i].addresses[0]){  //checking for position
 	  	//if(electron.remote.peermap[electron.remote.browser.services[i].addresses[0]] == un){
 		let newPosition = [(position[0] +i), (position[1]+i)];//
+		  //console.log(electron.remote.peermap[Name]);
 		if(electron.remote.peermap[Name] && electron.remote.peermap[Name].data && electron.remote.peermap[Name].data.Data && electron.remote.peermap[Name].data.Data.GPS){ // Recursively finding GPS coordinates
 			newPosition = [electron.remote.peermap[Name].data.Data.GPS.latitude,electron.remote.peermap[Name].data.Data.GPS.longitude];
 		}
-		table.push(<Marker key={i} position={newPosition}>
+		//let iconS = this.normalIcon;
+		//if(electron.remote.peermap[Name] && electron.remote.peermap[Name].data && electron.remote.peermap[Name].data.Data && electron.remote.peermap[Name].data.Data.Current){ // Recursively finding GPS coordinates
+			//iconS = this.dangerIcon;
+		//}
+		table.push(<Marker 
+				   //icon={iconS} 
+				   key={i} 
+				   position={newPosition}>
 		  <Popup>{Name}</Popup>
 		</Marker>);
 		//  console.log("Hello");
@@ -623,9 +643,17 @@ class NodeTable extends React.Component {
   }
   componentDidMount() {
     this.intervalID = setInterval(
-      () => this.tick(),
-      5000
+      () => {
+		  this.tick();
+    	  //this.updateElectron();
+			},
+      10000
     );
+  }
+	
+  updateElectron(){
+	//console.log(electron);
+	
   }
 	
   componentWillUnmount() {
@@ -638,6 +666,7 @@ class NodeTable extends React.Component {
 	
     for (let i = 0; i < this.state.electron.remote.browser.services.length; i++) {
       //Inner loop to create children
+		
       table.push(<NodeIndex key={this.state.electron.remote.browser.services[i].name} peer={this.state.electron.remote.browser.services[i]}></NodeIndex>);
       //Create the parent and add the children
     }
@@ -670,8 +699,14 @@ class Dashboard extends Component {
       radioSelected: 2,
       electron: electron
     };
+	  
+	 
+	  
+	
   }
 
+  
+	
   toggle() {
     this.setState({
       dropdownOpen: !this.state.dropdownOpen,
@@ -685,7 +720,7 @@ class Dashboard extends Component {
   }
 
   render() {
-	//console.log(this.state.electron);
+	console.log(this.state.electron);
     return (
       <div className="animated fadeIn">
 		<Row>

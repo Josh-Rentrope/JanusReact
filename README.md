@@ -1,5 +1,5 @@
 # Janus React
-This is a repository to manage all of your Janus nodes.
+This is a repository to manage all of your Janus nodes. [Introductory Video](https://youtu.be/bqdwI5zOTiA)
 ## Installation
 You will need to setup npm and your node environment
 

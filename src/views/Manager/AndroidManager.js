@@ -232,7 +232,7 @@ class NodeInfo extends React.Component {
 				<Button color={this.state.MotionEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeMotion}>Motion {this.state.MotionEnabled? "Enabled":"Disabled"}</Button> <br/><br/>
 				<Button color={this.state.SoundEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeSound}>Sound {this.state.SoundEnabled? "Enabled":"Disabled"}</Button> <br/><br/>
 				<Button color={this.state.CameraEnabled? "primary":"danger"} className="btn btn-primary col-4 m-2" onClick={this.changeCamera}>Camera {this.state.CameraEnabled? "Enabled":"Disabled"}</Button> 
-				<Button color="danger" className="btn btn-primary col-4 m-2" onClick={this.eraseData()}>Delete Data</Button> 
+				<Button color="danger" className="btn btn-primary col-4 m-2" onClick={this.eraseData}>Delete Data</Button> 
 			</div>
 			);
 		}else{
